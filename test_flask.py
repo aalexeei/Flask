@@ -1,5 +1,7 @@
 from flask import Flask, render_template,Response, jsonify
 import csv
+import requests
+
 app = Flask(__name__)
 
 
@@ -45,6 +47,11 @@ def mean():
     }
     return jsonify(result)
 
+
+@app.route('/space/')
+def space():
+    r = requests.get('http://api.open-notify.org/astros.json')
+    return "People in space: "+ str(r.json()["number"])
 
 if __name__ == '__main__':
     app.run(debug=True)
