@@ -1,8 +1,10 @@
-from flask import Flask, render_template,Response, jsonify
+from flask import Flask, render_template,Response, jsonify,request
 import csv
 import requests
+from faker import Faker
 
 app = Flask(__name__)
+fake = Faker()
 
 
 @app.route('/')
@@ -52,6 +54,17 @@ def mean():
 def space():
     r = requests.get('http://api.open-notify.org/astros.json')
     return "People in space: "+ str(r.json()["number"])
+
+@app.route('/generate-users/')
+def generate_users():
+    count = request.args.get('count', default=10, type=int)
+    users = []
+    for _ in range(count):
+        name = fake.name()
+        email = fake.email()
+        user = f"{name} {email}"
+        users.append(user)
+    return jsonify(users)
 
 if __name__ == '__main__':
     app.run(debug=True)
